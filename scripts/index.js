@@ -29,8 +29,14 @@ const htmlTaskContent = ({ id, key, url, title, tags, description }) =>
             </div>
         </div>
         <div class="card-footer">
-            <button type="button" class="btn btn-outline-primary float-right" data-bs-toggle="modal"
-                data-bs-target="#showTaskModal">Open Task
+            <button 
+            type="button" 
+            class="btn btn-outline-primary float-right" 
+            data-bs-toggle="modal"
+            data-bs-target="#showTaskModal" 
+            id=${id} 
+            onclick="openTask.apply(this,arguments)">
+            Open Task
             </button>
         </div>
     </div>
@@ -39,10 +45,9 @@ const htmlTaskContent = ({ id, key, url, title, tags, description }) =>
 
 const htmlModalContent = ({ id, url, title, description }) => {
     const date = new Date(parseInt(id));
-    return
-    `    
+    return `    
 	<div id=${id}>
-		${url && `<img width='100%' arc=${url} alt="card image cap" class="img-fluid  place_holder_image mb-3" />`
+    ${url ? `<img src=${url} alt="Task Image" class="card-image-top md-3 rounded-lg taskimage" />` : `<img src="images/defaultimage.jpg" alt="Task Image" class="card-image-top md-3 rounded-lg taskimage" />`
         }
 		<strong class="text-sm text-muted">Created on ${date.toDateString()}</strong>
 		<h2 class="my-3">${title}</h2>
@@ -90,4 +95,10 @@ const handleSubmit = (event) => {
 
     state.tasklist.push({ ...input, id });
     updateLocalStorage();
+};
+
+const openTask = (e) => {
+    if (!e) e = window.event;
+    const getTask = state.tasklist.find(({ id }) => id === e.target.id);
+    taskmodal.innerHTML = htmlModalContent(getTask);
 };
