@@ -16,3 +16,8 @@ body {
     padding: 10px 15px;
     background-color: white;
 }
+
+.taskimage {
+    width: 100%;
+    border-radius: 3%;
+}

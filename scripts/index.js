@@ -1,5 +1,5 @@
 const state = {
-    tasklist: {}
+    tasklist: []
 };
 
 const taskcontent = document.querySelector(".tasks_content");
@@ -9,7 +9,7 @@ const htmlTaskContent = ({ id, key, url, title, tags, description }) =>
     `
     <div class="col-md-6 col-lg-4 mt-3" id=${id} key=${id}>
     <div class="card shadow-sm task__card">
-        <div class="card-header d-flex gap-2 justify-content-end task__card_header">
+        <div class="card-header d-flex gap-3 justify-content-end task__card_header">
             <button type="button" class="btn btn-outline-info mr-2" name=${id}>
                 <i class="fas fa-pencil-alt" name=${id}></i>
             </button>
@@ -17,8 +17,8 @@ const htmlTaskContent = ({ id, key, url, title, tags, description }) =>
                 <i class="fas fa-trash-alt" name=${id}></i>
             </button>
         </div>
-        <div class="card-body">
-            ${url && `<img width='100%' arc=${url} alt="card image cap" class="card-image-top md-3 rounded-lg" />`
+        <div class="card-body d-flex flex-column gap-2 ">
+            ${url ? `<img src=${url} alt="Task Image" class="card-image-top md-3 rounded-lg taskimage" />` : `<img src="images/defaultimage.jpg" alt="Task Image" class="card-image-top md-3 rounded-lg taskimage" />`
     }
             <h4 class="task__card_title">${title}</h4>
             <p class="description trim-3-lines text-muted" data-gram_editors="false">${description}</p>
@@ -52,12 +52,15 @@ const htmlModalContent = ({ id, url, title, description }) => {
 };
 
 const updateLocalStorage = () => {
-    localStorage.setItem('task', JSON.stringify({
-        tasks: state.tasklist,
+    localStorage.setItem('tasks', JSON.stringify({
+        tasks: state.tasklist
     }));
 };
 
-const updateIntialDate = () => {
+const updateIntialData = () => {
+    if (localStorage.tasks == undefined) {
+        taskcontent.insertAdjacentHTML("beforeend", `<h5 class="fw-bold text-center mt-5 text-muted">No Tasks found</h5>`);
+    }
     const localStoragecopy = JSON.parse(localStorage.tasks);
 
     if (localStoragecopy) state.tasklist = localStoragecopy.tasks;
@@ -69,6 +72,7 @@ const updateIntialDate = () => {
 
 const handleSubmit = (event) => {
     const id = `${Date.now()}`;
+
     const input = {
         url: document.getElementById("imageURL").value,
         title: document.getElementById("taskTitle").value,
