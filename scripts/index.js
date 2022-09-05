@@ -46,7 +46,7 @@ const htmlTaskContent = ({ id, key, url, title, tags, description }) =>
 const htmlModalContent = ({ id, url, title, description }) => {
     const date = new Date(parseInt(id));
     return `    
-	<div id=${id}>
+	<div id=${id} class="d-flex flex-column gap-1" >
     ${url ? `<img src=${url} alt="Task Image" class="card-image-top md-3 rounded-lg taskimage" />` : `<img src="images/defaultimage.jpg" alt="Task Image" class="card-image-top md-3 rounded-lg taskimage" />`
         }
 		<strong class="text-sm text-muted">Created on ${date.toDateString()}</strong>
