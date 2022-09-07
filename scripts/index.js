@@ -13,7 +13,7 @@ const htmlTaskContent = ({ id, key, url, title, tags, description }) =>
             <button type="button" class="btn btn-outline-info mr-2" name=${id}>
                 <i class="fas fa-pencil-alt" name=${id}></i>
             </button>
-            <button type="button" class="btn btn-outline-danger mr-2" name=${id}>
+            <button type="button" class="btn btn-outline-danger mr-2" name=${id} onclick="deleteTask.apply(this, arguments)">
                 <i class="fas fa-trash-alt" name=${id}></i>
             </button>
         </div>
@@ -39,9 +39,7 @@ const htmlTaskContent = ({ id, key, url, title, tags, description }) =>
             Open Task
             </button>
         </div>
-    </div>
-
-    `;
+    </div>`;
 
 const htmlModalContent = ({ id, url, title, description }) => {
     const date = new Date(parseInt(id));
@@ -63,7 +61,7 @@ const updateLocalStorage = () => {
 };
 
 const updateIntialData = () => {
-    if (localStorage.tasks == undefined) {
+    if (localStorage.tasks == undefined ||) {
         taskcontent.insertAdjacentHTML("beforeend", `<h5 class="fw-bold text-center mt-5 text-muted">No Tasks found</h5>`);
     }
     const localStoragecopy = JSON.parse(localStorage.tasks);
@@ -101,4 +99,20 @@ const openTask = (e) => {
     if (!e) e = window.event;
     const getTask = state.tasklist.find(({ id }) => id === e.target.id);
     taskmodal.innerHTML = htmlModalContent(getTask);
+};
+
+const deleteTask = (e) => {
+    if (!e) e = window.event;
+    const targetId = e.target.getAttribute("name");
+    const type = e.target.tagName;
+    console.log(targetId, type);
+    const removeTask = state.tasklist.filter(({ id }) => id !== targetId);
+    state.tasklist = removeTask;
+
+    if (type === "BUTTON") {
+        return e.target.parentNode.parentNode.parentNode.parentNode.removeChild(e.target.parentNode.parentNode.parentNode);
+    }
+    if (type === "I") {
+        return e.target.parentNode.parentNode.parentNode.parentNode.parentNode.removeChild(e.target.parentNode.parentNode.parentNode.parentNode);
+    }
 };
