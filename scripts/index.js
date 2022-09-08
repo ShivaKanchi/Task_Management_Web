@@ -136,7 +136,7 @@ const editTask = (e) => {
     taskTitle = parentNode.childNodes[3].childNodes[3];
     taskDesc = parentNode.childNodes[3].childNodes[5];
     taskType = parentNode.childNodes[3].childNodes[7].childNodes[1];
-    console.log(taskType, taskTitle, taskDesc);
+    submitButton
     const updateEdit = {
         taskTitle: taskTitle.innerHTML,
         taskDesc: taskDesc.innerHTML,
@@ -144,4 +144,23 @@ const editTask = (e) => {
     };
 
     let stateCopy = state.tasklist;
+
+    stateCopy = stateCopy.map((task) =>
+        task.id === targetId ? {
+            id: task.id,
+            title: updateEdit.taskTitle,
+            description: updateEdit.taskDesc,
+            type: task.taskType,
+            url: task.url
+        } : task
+    );
+    console.log(state.tasklist, stateCopy)
+
+    state.tasklist = stateCopy;
+    updateLocalStorage();
+
+    taskTitle.setAttribute("contenteditable", "false");
+    taskDesc.setAttribute("contenteditable", "false");
+    taskType.setAttribute("contenteditable", "false");
+
 };
