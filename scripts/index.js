@@ -10,7 +10,7 @@ const htmlTaskContent = ({ id, key, url, title, tags, description }) =>
     <div class="col-md-6 col-lg-4 mt-3" id=${id} key=${id}>
     <div class="card shadow-sm task__card">
         <div class="card-header d-flex gap-3 justify-content-end task__card_header">
-            <button type="button" class="btn btn-outline-info mr-2" name=${id} onclick="editTask.apply(this, arguments)>
+            <button type="button" class="btn btn-outline-info mr-2" name=${id} onclick="editTask.apply(this, arguments)">
                 <i class="fas fa-pencil-alt" name=${id}></i>
             </button>
             <button type="button" class="btn btn-outline-danger mr-2" name=${id} onclick="deleteTask.apply(this, arguments)">
@@ -122,7 +122,7 @@ const editTask = (e) => {
     const type = e.target.tagName;
 
     let parentNode;
-    let tastTitle;
+    let taskTitle;
     let taskDesc;
     let taskType;
     let submitButton;
@@ -133,6 +133,15 @@ const editTask = (e) => {
     else {
         parentNode = e.target.parentNode.parentNode.parentNode;
     }
-    tasktitle = parentNode.childNodes();
-    console.log(tastTitle);
+    taskTitle = parentNode.childNodes[3].childNodes[3];
+    taskDesc = parentNode.childNodes[3].childNodes[5];
+    taskType = parentNode.childNodes[3].childNodes[7].childNodes[1];
+    console.log(taskType, taskTitle, taskDesc);
+    const updateEdit = {
+        taskTitle: taskTitle.innerHTML,
+        taskDesc: taskDesc.innerHTML,
+        taskType: taskType.innerHTML
+    };
+
+    let stateCopy = state.tasklist;
 };
