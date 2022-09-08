@@ -10,7 +10,7 @@ const htmlTaskContent = ({ id, key, url, title, tags, description }) =>
     <div class="col-md-6 col-lg-4 mt-3" id=${id} key=${id}>
     <div class="card shadow-sm task__card">
         <div class="card-header d-flex gap-3 justify-content-end task__card_header">
-            <button type="button" class="btn btn-outline-info mr-2" name=${id}>
+            <button type="button" class="btn btn-outline-info mr-2" name=${id} onclick="editTask.apply(this, arguments)>
                 <i class="fas fa-pencil-alt" name=${id}></i>
             </button>
             <button type="button" class="btn btn-outline-danger mr-2" name=${id} onclick="deleteTask.apply(this, arguments)">
@@ -115,4 +115,24 @@ const deleteTask = (e) => {
     if (type === "I") {
         return e.target.parentNode.parentNode.parentNode.parentNode.parentNode.removeChild(e.target.parentNode.parentNode.parentNode.parentNode);
     }
+};
+const editTask = (e) => {
+    if (!e) e = window.event;
+    const targetId = e.target.getAttribute("name");
+    const type = e.target.tagName;
+
+    let parentNode;
+    let tastTitle;
+    let taskDesc;
+    let taskType;
+    let submitButton;
+
+    if (type == "BUTTON") {
+        parentNode = e.target.parentNode.parentNode;
+    }
+    else {
+        parentNode = e.target.parentNode.parentNode.parentNode;
+    }
+    tasktitle = parentNode.childNodes();
+    console.log(tastTitle);
 };
