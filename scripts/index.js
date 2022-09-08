@@ -136,7 +136,8 @@ const editTask = (e) => {
     taskTitle = parentNode.childNodes[3].childNodes[3];
     taskDesc = parentNode.childNodes[3].childNodes[5];
     taskType = parentNode.childNodes[3].childNodes[7].childNodes[1];
-    submitButton
+    submitButton = parentNode.childNodes[5].childNodes[1];
+
     const updateEdit = {
         taskTitle: taskTitle.innerHTML,
         taskDesc: taskDesc.innerHTML,
@@ -154,8 +155,6 @@ const editTask = (e) => {
             url: task.url
         } : task
     );
-    console.log(state.tasklist, stateCopy)
-
     state.tasklist = stateCopy;
     updateLocalStorage();
 
@@ -163,4 +162,5 @@ const editTask = (e) => {
     taskDesc.setAttribute("contenteditable", "false");
     taskType.setAttribute("contenteditable", "false");
 
+    submitButton.setAttribute("onclick", "openTask.apply(this,arguments)");
 };
