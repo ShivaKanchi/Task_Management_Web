@@ -19,5 +19,14 @@ body {
 
 .taskimage {
     width: 100%;
+    height: 169px;
     border-radius: 3%;
+    object-position: center;
+}
+
+.showtaskimage {
+    width: 100%;
+
+    border-radius: 3%;
+    object-position: center;
 }

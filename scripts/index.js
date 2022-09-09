@@ -49,7 +49,7 @@ const htmlModalContent = ({ id, url, title, description }) => {
     const date = new Date(parseInt(id));
     return `    
 	<div id=${id} class="d-flex flex-column gap-1" >
-    ${url ? `<img src=${url} alt="Task Image" class="card-image-top md-3 rounded-lg taskimage" />` : `<img src="images/defaultimage.jpg" alt="Task Image" class="card-image-top md-3 rounded-lg taskimage" />`
+    ${url ? `<img src=${url} alt="Task Image" class="card-image-top md-3 rounded-lg showtaskimage" />` : `<img src="images/defaultimage.jpg" alt="Task Image" class="card-image-top md-3 rounded-lg taskimage" />`
         }
 		<strong class="text-sm text-muted">Created on ${date.toDateString()}</strong>
 		<h2 class="my-3">${title}</h2>
@@ -106,7 +106,6 @@ const handleSubmit = (event) => {
 const openTask = (e) => {
     if (!e) e = window.event;
     const getTask = state.tasklist.find(({ id }) => id === e.target.id);
-    console.log(e.target.id);
     taskmodal.innerHTML = htmlModalContent(getTask);
 };
 
