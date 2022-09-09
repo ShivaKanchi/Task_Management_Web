@@ -163,4 +163,7 @@ const editTask = (e) => {
     taskType.setAttribute("contenteditable", "false");
 
     submitButton.setAttribute("onclick", "openTask.apply(this,arguments)");
-};
+    submitButton.remveAttribute("data-bs-toggle");
+    submitButton.remveAttribute("data-bs-target");
+    submitButton.innerHTML("Save Changes");
+};  
