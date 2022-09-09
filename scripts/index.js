@@ -209,7 +209,7 @@ const searchTask = (e) => {
     };
 
     const resultData = state.tasklist.filter(({ title }) => {
-        return title.includes(e.target.value)
+        return title.toLowerCase().includes(e.target.value.toLowerCase());
     });
 
     resultData.map((cardDate) => {
