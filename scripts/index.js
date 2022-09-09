@@ -37,6 +37,7 @@ const htmlTaskContent = ({ id, key, url, title, tags, description }) =>
             data-bs-toggle="modal"
             data-bs-target="#showTaskModal" 
             id=${id} 
+            name=${id}
             onclick="openTask.apply(this,arguments)">
             Open Task
             </button>
@@ -105,6 +106,7 @@ const handleSubmit = (event) => {
 const openTask = (e) => {
     if (!e) e = window.event;
     const getTask = state.tasklist.find(({ id }) => id === e.target.id);
+    console.log(e.target.id);
     taskmodal.innerHTML = htmlModalContent(getTask);
 };
 
@@ -128,7 +130,7 @@ const deleteTask = (e) => {
 
 const editTask = (e) => {
     if (!e) e = window.event;
-    const targetId = e.target.getAttribute("name");
+    const targetId = e.target.id;
     const type = e.target.tagName;
 
     let parentNode;
@@ -160,7 +162,7 @@ const editTask = (e) => {
 
 const saveTask = (e) => {
     if (!e) e = window.event;
-    const targetId = e.target.getAttribute("name");
+    const targetId = e.target.id;
     const parentNode = e.target.parentNode.parentNode;
 
     taskTitle = parentNode.childNodes[3].childNodes[3];
@@ -172,8 +174,10 @@ const saveTask = (e) => {
         taskTitle: taskTitle.innerHTML,
         taskDesc: taskDesc.innerHTML,
         taskType: taskType.innerHTML
+
     };
 
+    console.log(state.tasklist);
     let stateCopy = state.tasklist;
 
     stateCopy = stateCopy.map((task) =>
@@ -181,10 +185,11 @@ const saveTask = (e) => {
             id: task.id,
             title: updateEdit.taskTitle,
             description: updateEdit.taskDesc,
-            type: task.taskType,
+            tags: updateEdit.taskType,
             url: task.url
         } : task
     );
+
     state.tasklist = stateCopy;
     updateLocalStorage();
 
@@ -192,7 +197,7 @@ const saveTask = (e) => {
     taskDesc.setAttribute("contenteditable", "false");
     taskType.setAttribute("contenteditable", "false");
     submitButton.setAttribute("onclick", "openTask.apply(this,arguments)");
-    submitButton.setAttribute("data-bs-toggle");
-    submitButton.setAttribute("data-bs-target");
-    submitButton.innerHTML("Open Task");
+    submitButton.setAttribute("data-bs-toggle", "modal");
+    submitButton.setAttribute("data-bs-target", "#showTaskModal");
+    submitButton.innerHTML = "Open Task";
 };  
