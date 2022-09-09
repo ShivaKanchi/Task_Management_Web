@@ -200,4 +200,20 @@ const saveTask = (e) => {
     submitButton.setAttribute("data-bs-toggle", "modal");
     submitButton.setAttribute("data-bs-target", "#showTaskModal");
     submitButton.innerHTML = "Open Task";
-};  
+};
+
+const searchTask = (e) => {
+    if (!e) e = window.event;
+
+    while (taskcontent.firstChild) {
+        taskcontent.removeChild(taskcontent.firstChild);
+    };
+
+    const resultData = state.tasklist.filter(({ title }) => {
+        return title.includes(e.target.value)
+    });
+
+    resultData.map((cardDate) => {
+        taskcontent.insertAdjacentHTML("beforeend", htmlTaskContent(cardDate));
+    });
+};
