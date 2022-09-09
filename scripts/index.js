@@ -157,7 +157,17 @@ const editTask = (e) => {
     submitButton.innerHTML = "Save Changes";
 };
 
+
 const saveTask = (e) => {
+    if (!e) e = window.event;
+    const targetId = e.target.getAttribute("name");
+    const parentNode = e.target.parentNode.parentNode;
+
+    taskTitle = parentNode.childNodes[3].childNodes[3];
+    taskDesc = parentNode.childNodes[3].childNodes[5];
+    taskType = parentNode.childNodes[3].childNodes[7].childNodes[1];
+    submitButton = parentNode.childNodes[5].childNodes[1];
+
     const updateEdit = {
         taskTitle: taskTitle.innerHTML,
         taskDesc: taskDesc.innerHTML,
