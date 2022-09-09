@@ -2,8 +2,10 @@ const state = {
     tasklist: []
 };
 
+
 const taskcontent = document.querySelector(".tasks_content");
 const taskmodal = document.querySelector(".show_task_content");
+
 
 const htmlTaskContent = ({ id, key, url, title, tags, description }) =>
     `
@@ -41,6 +43,7 @@ const htmlTaskContent = ({ id, key, url, title, tags, description }) =>
         </div>
     </div>`;
 
+
 const htmlModalContent = ({ id, url, title, description }) => {
     const date = new Date(parseInt(id));
     return `    
@@ -54,11 +57,13 @@ const htmlModalContent = ({ id, url, title, description }) => {
     `;
 };
 
+
 const updateLocalStorage = () => {
     localStorage.setItem('tasks', JSON.stringify({
         tasks: state.tasklist
     }));
 };
+
 
 const updateIntialData = () => {
     if (localStorage.tasks == undefined || localStorage.tasks.length <= 12) {
@@ -72,6 +77,7 @@ const updateIntialData = () => {
         taskcontent.insertAdjacentHTML("beforeend", htmlTaskContent(cardDate));
     });
 };
+
 
 const handleSubmit = (event) => {
     const id = `${Date.now()}`;
@@ -95,11 +101,13 @@ const handleSubmit = (event) => {
     updateLocalStorage();
 };
 
+
 const openTask = (e) => {
     if (!e) e = window.event;
     const getTask = state.tasklist.find(({ id }) => id === e.target.id);
     taskmodal.innerHTML = htmlModalContent(getTask);
 };
+
 
 const deleteTask = (e) => {
     if (!e) e = window.event;
@@ -116,6 +124,8 @@ const deleteTask = (e) => {
         return e.target.parentNode.parentNode.parentNode.parentNode.parentNode.removeChild(e.target.parentNode.parentNode.parentNode.parentNode);
     }
 };
+
+
 const editTask = (e) => {
     if (!e) e = window.event;
     const targetId = e.target.getAttribute("name");
@@ -138,6 +148,16 @@ const editTask = (e) => {
     taskType = parentNode.childNodes[3].childNodes[7].childNodes[1];
     submitButton = parentNode.childNodes[5].childNodes[1];
 
+    taskTitle.setAttribute("contenteditable", "true");
+    taskDesc.setAttribute("contenteditable", "true");
+    taskType.setAttribute("contenteditable", "true");
+    submitButton.setAttribute("onclick", "saveTask.apply(this,arguments)");
+    submitButton.removeAttribute("data-bs-toggle");
+    submitButton.removeAttribute("data-bs-target");
+    submitButton.innerHTML = "Save Changes";
+};
+
+const saveTask = (e) => {
     const updateEdit = {
         taskTitle: taskTitle.innerHTML,
         taskDesc: taskDesc.innerHTML,
@@ -161,9 +181,8 @@ const editTask = (e) => {
     taskTitle.setAttribute("contenteditable", "false");
     taskDesc.setAttribute("contenteditable", "false");
     taskType.setAttribute("contenteditable", "false");
-
     submitButton.setAttribute("onclick", "openTask.apply(this,arguments)");
-    submitButton.remveAttribute("data-bs-toggle");
-    submitButton.remveAttribute("data-bs-target");
-    submitButton.innerHTML("Save Changes");
+    submitButton.setAttribute("data-bs-toggle");
+    submitButton.setAttribute("data-bs-target");
+    submitButton.innerHTML("Open Task");
 };  
