@@ -87,10 +87,10 @@ const updateIntialData = () => {
 
     const localStoragecopy = JSON.parse(getStoredData);
 
-    if (localStoragecopy) state.tasklist = localStoragecopy.tasks;
+    if (localStoragecopy.tasks) state.tasklist = localStoragecopy.tasks;
 
     state.tasklist.map((cardDate) => {
-        taskcontent.insertAdjacentHTML("beforeend", htmlTaskContent(cardDate));
+        taskcontent.appendChild(htmlTaskContent(cardDate));
     });
 };
 
@@ -109,7 +109,7 @@ const handleSubmit = (event) => {
     if (input.title === "" || input.description === "" || input.tags === "") {
         return alert("Please fill properly")
     }
-    taskcontent.insertAdjacentHTML("beforeend", htmlTaskContent({
+    taskcontent.appendChild(htmlTaskContent({
         ...input, id
     }));
 
@@ -121,7 +121,36 @@ const handleSubmit = (event) => {
 const openTask = (e) => {
     if (!e) e = window.event;
     const getTask = state.tasklist.find(({ id }) => id === e.target.id);
-    taskmodal.innerHTML = htmlModalContent(getTask);
+    taskmodal.innerHTML = "";
+
+    const date = new Date(parseInt(getTask.id));
+
+    const container = document.createElement("div");
+    container.id = getTask.id;
+    container.className = "d-flex flex-column gap-1";
+
+    const img = document.createElement("img");
+    img.src = getTask.url || "images/defaultimage.jpg";
+    img.alt = "Task Image";
+    img.className = "card-image-top md-3 rounded-lg showtaskimage";
+    container.appendChild(img);
+
+    const strong = document.createElement("strong");
+    strong.className = "text-sm text-muted";
+    strong.textContent = `Created on ${date.toDateString()}`;
+    container.appendChild(strong);
+
+    const h2 = document.createElement("h2");
+    h2.className = "my-3";
+    h2.textContent = getTask.title;
+    container.appendChild(h2);
+
+    const p = document.createElement("p");
+    p.className = "lead";
+    p.textContent = getTask.description;
+    container.appendChild(p);
+
+    taskmodal.appendChild(container);
 };
 
 
@@ -159,10 +188,10 @@ const editTask = (e) => {
     else {
         parentNode = e.target.parentNode.parentNode.parentNode;
     }
-    taskTitle = parentNode.childNodes[3].childNodes[3];
-    taskDesc = parentNode.childNodes[3].childNodes[5];
-    taskType = parentNode.childNodes[3].childNodes[7].childNodes[1];
-    submitButton = parentNode.childNodes[5].childNodes[1];
+    taskTitle = parentNode.querySelector(".task__card_title");
+    taskDesc = parentNode.querySelector(".description");
+    taskType = parentNode.querySelector(".badge");
+    submitButton = parentNode.querySelector(".card-footer button");
 
     taskTitle.setAttribute("contenteditable", "true");
     taskDesc.setAttribute("contenteditable", "true");
@@ -179,15 +208,15 @@ const saveTask = (e) => {
     const targetId = e.target.id;
     const parentNode = e.target.parentNode.parentNode;
 
-    taskTitle = parentNode.childNodes[3].childNodes[3];
-    taskDesc = parentNode.childNodes[3].childNodes[5];
-    taskType = parentNode.childNodes[3].childNodes[7].childNodes[1];
-    submitButton = parentNode.childNodes[5].childNodes[1];
+    taskTitle = parentNode.querySelector(".task__card_title");
+    taskDesc = parentNode.querySelector(".description");
+    taskType = parentNode.querySelector(".badge");
+    submitButton = parentNode.querySelector(".card-footer button");
 
     const updateEdit = {
-        taskTitle: taskTitle.innerHTML,
-        taskDesc: taskDesc.innerHTML,
-        taskType: taskType.innerHTML
+        taskTitle: taskTitle.textContent,
+        taskDesc: taskDesc.textContent,
+        taskType: taskType.textContent
 
     };
 
@@ -229,7 +258,7 @@ const searchTask = (e) => {
     });
 
     resultData.map((cardDate) => {
-        taskcontent.insertAdjacentHTML("beforeend", htmlTaskContent(cardDate));
+        taskcontent.appendChild(htmlTaskContent(cardDate));
     });
 };
 if (typeof module !== "undefined") {
