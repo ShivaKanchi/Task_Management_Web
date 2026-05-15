@@ -7,55 +7,88 @@ const taskcontent = document.querySelector(".tasks_content");
 const taskmodal = document.querySelector(".show_task_content");
 
 
-const htmlTaskContent = ({ id, key, url, title, tags, description }) =>
-    `
-    <div class="col-md-6 col-lg-4 mt-3" id=${id} key=${id}>
-    <div class="card shadow-sm task__card">
-        <div class="card-header d-flex gap-3 justify-content-end task__card_header">
-            <button type="button" class="btn btn-outline-info mr-2" name=${id} onclick="editTask.apply(this, arguments)">
-                <i class="fas fa-pencil-alt" name=${id}></i>
-            </button>
-            <button type="button" class="btn btn-outline-danger mr-2" name=${id} onclick="deleteTask.apply(this, arguments)">
-                <i class="fas fa-trash-alt" name=${id}></i>
-            </button>
-        </div>
-        <div class="card-body d-flex flex-column gap-2 ">
-            ${url ? `<img src=${url} alt="Task Image" class="card-image-top md-3 rounded-lg taskimage" />` : `<img src="images/defaultimage.jpg" alt="Task Image" class="card-image-top md-3 rounded-lg taskimage" />`
-    }
-            <h4 class="task__card_title">${title}</h4>
-            <p class="description trim-3-lines text-muted" data-gram_editors="false">${description}</p>
-            <div class="tags d-flex flex-wrap text-white">
-                <span class="badge bg-primary m-1">${tags}</span>
-            </div>
-            <div>
-            </div>
-        </div>
-        <div class="card-footer">
-            <button 
-            type="button" 
-            class="btn btn-outline-primary float-right" 
-            data-bs-toggle="modal"
-            data-bs-target="#showTaskModal" 
-            id=${id} 
-            name=${id}
-            onclick="openTask.apply(this,arguments)">
-            Open Task
-            </button>
-        </div>
-    </div>`;
+const htmlTaskContent = ({ id, key, url, title, tags, description }) => {
+    const col = document.createElement("div");
+    col.className = "col-md-6 col-lg-4 mt-3";
+    col.id = id;
+    col.setAttribute("key", id);
 
+    const card = document.createElement("div");
+    card.className = "card shadow-sm task__card";
 
-const htmlModalContent = ({ id, url, title, description }) => {
-    const date = new Date(parseInt(id));
-    return `    
-	<div id=${id} class="d-flex flex-column gap-1" >
-    ${url ? `<img src=${url} alt="Task Image" class="card-image-top md-3 rounded-lg showtaskimage" />` : `<img src="images/defaultimage.jpg" alt="Task Image" class="card-image-top md-3 rounded-lg taskimage" />`
-        }
-		<strong class="text-sm text-muted">Created on ${date.toDateString()}</strong>
-		<h2 class="my-3">${title}</h2>
-		<p class="lead">${description}</p>
-	</div>
-    `;
+    const header = document.createElement("div");
+    header.className = "card-header d-flex gap-3 justify-content-end task__card_header";
+
+    const editBtn = document.createElement("button");
+    editBtn.type = "button";
+    editBtn.className = "btn btn-outline-info mr-2";
+    editBtn.setAttribute("name", id);
+    editBtn.onclick = function() { editTask.apply(this, arguments); };
+    const editIcon = document.createElement("i");
+    editIcon.className = "fas fa-pencil-alt";
+    editIcon.setAttribute("name", id);
+    editBtn.appendChild(editIcon);
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.type = "button";
+    deleteBtn.className = "btn btn-outline-danger mr-2";
+    deleteBtn.setAttribute("name", id);
+    deleteBtn.onclick = function() { deleteTask.apply(this, arguments); };
+    const deleteIcon = document.createElement("i");
+    deleteIcon.className = "fas fa-trash-alt";
+    deleteIcon.setAttribute("name", id);
+    deleteBtn.appendChild(deleteIcon);
+
+    header.appendChild(editBtn);
+    header.appendChild(deleteBtn);
+
+    const body = document.createElement("div");
+    body.className = "card-body d-flex flex-column gap-2";
+
+    const img = document.createElement("img");
+    img.src = url || "images/defaultimage.jpg";
+    img.alt = "Task Image";
+    img.className = "card-image-top md-3 rounded-lg taskimage";
+    body.appendChild(img);
+
+    const h4 = document.createElement("h4");
+    h4.className = "task__card_title";
+    h4.textContent = title;
+    body.appendChild(h4);
+
+    const p = document.createElement("p");
+    p.className = "description trim-3-lines text-muted";
+    p.setAttribute("data-gram_editors", "false");
+    p.textContent = description;
+    body.appendChild(p);
+
+    const tagsDiv = document.createElement("div");
+    tagsDiv.className = "tags d-flex flex-wrap text-white";
+    const span = document.createElement("span");
+    span.className = "badge bg-primary m-1";
+    span.textContent = tags;
+    tagsDiv.appendChild(span);
+    body.appendChild(tagsDiv);
+
+    const footer = document.createElement("div");
+    footer.className = "card-footer";
+    const openBtn = document.createElement("button");
+    openBtn.type = "button";
+    openBtn.className = "btn btn-outline-primary float-right";
+    openBtn.setAttribute("data-bs-toggle", "modal");
+    openBtn.setAttribute("data-bs-target", "#showTaskModal");
+    openBtn.id = id;
+    openBtn.setAttribute("name", id);
+    openBtn.onclick = function() { openTask.apply(this, arguments); };
+    openBtn.textContent = "Open Task";
+    footer.appendChild(openBtn);
+
+    card.appendChild(header);
+    card.appendChild(body);
+    card.appendChild(footer);
+    col.appendChild(card);
+
+    return col;
 };
 
 
@@ -68,14 +101,17 @@ const updateLocalStorage = () => {
 
 const updateIntialData = () => {
     if (localStorage.tasks == undefined || localStorage.tasks.length <= 12) {
-        taskcontent.insertAdjacentHTML("beforeend", `<h5 class="fw-bold text-center mt-5 text-muted">No Tasks found</h5>`);
+        const noTasks = document.createElement("h5");
+        noTasks.className = "fw-bold text-center mt-5 text-muted";
+        noTasks.textContent = "No Tasks found";
+        taskcontent.appendChild(noTasks);
     }
-    const localStoragecopy = JSON.parse(localStorage.tasks);
+    const localStoragecopy = JSON.parse(localStorage.tasks || "{}");
 
-    if (localStoragecopy) state.tasklist = localStoragecopy.tasks;
+    if (localStoragecopy.tasks) state.tasklist = localStoragecopy.tasks;
 
     state.tasklist.map((cardDate) => {
-        taskcontent.insertAdjacentHTML("beforeend", htmlTaskContent(cardDate));
+        taskcontent.appendChild(htmlTaskContent(cardDate));
     });
 };
 
@@ -94,7 +130,7 @@ const handleSubmit = (event) => {
     if (input.title === "" || input.description === "" || input.tags === "") {
         return alert("Please fill properly")
     }
-    taskcontent.insertAdjacentHTML("beforeend", htmlTaskContent({
+    taskcontent.appendChild(htmlTaskContent({
         ...input, id
     }));
 
@@ -106,7 +142,36 @@ const handleSubmit = (event) => {
 const openTask = (e) => {
     if (!e) e = window.event;
     const getTask = state.tasklist.find(({ id }) => id === e.target.id);
-    taskmodal.innerHTML = htmlModalContent(getTask);
+    taskmodal.innerHTML = "";
+
+    const date = new Date(parseInt(getTask.id));
+
+    const container = document.createElement("div");
+    container.id = getTask.id;
+    container.className = "d-flex flex-column gap-1";
+
+    const img = document.createElement("img");
+    img.src = getTask.url || "images/defaultimage.jpg";
+    img.alt = "Task Image";
+    img.className = "card-image-top md-3 rounded-lg showtaskimage";
+    container.appendChild(img);
+
+    const strong = document.createElement("strong");
+    strong.className = "text-sm text-muted";
+    strong.textContent = `Created on ${date.toDateString()}`;
+    container.appendChild(strong);
+
+    const h2 = document.createElement("h2");
+    h2.className = "my-3";
+    h2.textContent = getTask.title;
+    container.appendChild(h2);
+
+    const p = document.createElement("p");
+    p.className = "lead";
+    p.textContent = getTask.description;
+    container.appendChild(p);
+
+    taskmodal.appendChild(container);
 };
 
 
@@ -144,10 +209,10 @@ const editTask = (e) => {
     else {
         parentNode = e.target.parentNode.parentNode.parentNode;
     }
-    taskTitle = parentNode.childNodes[3].childNodes[3];
-    taskDesc = parentNode.childNodes[3].childNodes[5];
-    taskType = parentNode.childNodes[3].childNodes[7].childNodes[1];
-    submitButton = parentNode.childNodes[5].childNodes[1];
+    taskTitle = parentNode.querySelector(".task__card_title");
+    taskDesc = parentNode.querySelector(".description");
+    taskType = parentNode.querySelector(".badge");
+    submitButton = parentNode.querySelector(".card-footer button");
 
     taskTitle.setAttribute("contenteditable", "true");
     taskDesc.setAttribute("contenteditable", "true");
@@ -164,15 +229,15 @@ const saveTask = (e) => {
     const targetId = e.target.id;
     const parentNode = e.target.parentNode.parentNode;
 
-    taskTitle = parentNode.childNodes[3].childNodes[3];
-    taskDesc = parentNode.childNodes[3].childNodes[5];
-    taskType = parentNode.childNodes[3].childNodes[7].childNodes[1];
-    submitButton = parentNode.childNodes[5].childNodes[1];
+    taskTitle = parentNode.querySelector(".task__card_title");
+    taskDesc = parentNode.querySelector(".description");
+    taskType = parentNode.querySelector(".badge");
+    submitButton = parentNode.querySelector(".card-footer button");
 
     const updateEdit = {
-        taskTitle: taskTitle.innerHTML,
-        taskDesc: taskDesc.innerHTML,
-        taskType: taskType.innerHTML
+        taskTitle: taskTitle.textContent,
+        taskDesc: taskDesc.textContent,
+        taskType: taskType.textContent
 
     };
 
@@ -213,6 +278,6 @@ const searchTask = (e) => {
     });
 
     resultData.map((cardDate) => {
-        taskcontent.insertAdjacentHTML("beforeend", htmlTaskContent(cardDate));
+        taskcontent.appendChild(htmlTaskContent(cardDate));
     });
 };
