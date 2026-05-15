@@ -104,14 +104,12 @@ const handleSubmit = (event) => {
 
 
 const openTask = (e) => {
-    if (!e) e = window.event;
     const getTask = state.tasklist.find(({ id }) => id === e.target.id);
     taskmodal.innerHTML = htmlModalContent(getTask);
 };
 
 
 const deleteTask = (e) => {
-    if (!e) e = window.event;
     const targetId = e.target.getAttribute("name");
     const type = e.target.tagName;
     console.log(targetId, type);
@@ -128,7 +126,6 @@ const deleteTask = (e) => {
 
 
 const editTask = (e) => {
-    if (!e) e = window.event;
     const targetId = e.target.id;
     const type = e.target.tagName;
 
@@ -160,7 +157,6 @@ const editTask = (e) => {
 
 
 const saveTask = (e) => {
-    if (!e) e = window.event;
     const targetId = e.target.id;
     const parentNode = e.target.parentNode.parentNode;
 
@@ -202,8 +198,6 @@ const saveTask = (e) => {
 };
 
 const searchTask = (e) => {
-    if (!e) e = window.event;
-
     while (taskcontent.firstChild) {
         taskcontent.removeChild(taskcontent.firstChild);
     };
