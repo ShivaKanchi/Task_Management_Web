@@ -221,6 +221,6 @@ const searchTask = (e) => {
         taskcontent.insertAdjacentHTML("beforeend", htmlTaskContent(cardDate));
     });
 };
-if (typeof module !== 'undefined') {
-    module.exports = { htmlModalContent };
+if (typeof module !== "undefined") {
+    module.exports = { htmlTaskContent };
 }
