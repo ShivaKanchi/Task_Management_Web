@@ -6,89 +6,67 @@ const state = {
 const taskcontent = document.querySelector(".tasks_content");
 const taskmodal = document.querySelector(".show_task_content");
 
+const escapeHTML = (str) => {
+    if (!str) return str;
+    return str.toString().replace(/[&<>"']/g, (m) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+    })[m]);
+};
 
-const htmlTaskContent = ({ id, key, url, title, tags, description }) => {
-    const col = document.createElement("div");
-    col.className = "col-md-6 col-lg-4 mt-3";
-    col.id = id;
-    col.setAttribute("key", id);
 
-    const card = document.createElement("div");
-    card.className = "card shadow-sm task__card";
+const htmlTaskContent = ({ id, url, title, tags, description }) =>
+    `
+    <div class="col-md-6 col-lg-4 mt-3" id="${escapeHTML(id)}" key="${escapeHTML(id)}">
+    <div class="card shadow-sm task__card">
+        <div class="card-header d-flex gap-3 justify-content-end task__card_header">
+            <button type="button" class="btn btn-outline-info mr-2" name="${escapeHTML(id)}" onclick="editTask.apply(this, arguments)">
+                <i class="fas fa-pencil-alt" name="${escapeHTML(id)}"></i>
+            </button>
+            <button type="button" class="btn btn-outline-danger mr-2" name="${escapeHTML(id)}" onclick="deleteTask.apply(this, arguments)">
+                <i class="fas fa-trash-alt" name="${escapeHTML(id)}"></i>
+            </button>
+        </div>
+        <div class="card-body d-flex flex-column gap-2 ">
+            ${url ? `<img src="${escapeHTML(url)}" alt="Task Image" class="card-image-top md-3 rounded-lg taskimage" />` : `<img src="images/defaultimage.jpg" alt="Task Image" class="card-image-top md-3 rounded-lg taskimage" />`
+    }
+            <h4 class="task__card_title">${escapeHTML(title)}</h4>
+            <p class="description trim-3-lines text-muted" data-gram_editors="false">${escapeHTML(description)}</p>
+            <div class="tags d-flex flex-wrap text-white">
+                <span class="badge bg-primary m-1">${escapeHTML(tags)}</span>
+            </div>
+            <div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <button 
+            type="button" 
+            class="btn btn-outline-primary float-right" 
+            data-bs-toggle="modal"
+            data-bs-target="#showTaskModal" 
+            id="${escapeHTML(id)}"
+            name="${escapeHTML(id)}"
+            onclick="openTask.apply(this,arguments)">
+            Open Task
+            </button>
+        </div>
+    </div>`;
 
-    const header = document.createElement("div");
-    header.className = "card-header d-flex gap-3 justify-content-end task__card_header";
 
-    const editBtn = document.createElement("button");
-    editBtn.type = "button";
-    editBtn.className = "btn btn-outline-info mr-2";
-    editBtn.setAttribute("name", id);
-    editBtn.onclick = function() { editTask.apply(this, arguments); };
-    const editIcon = document.createElement("i");
-    editIcon.className = "fas fa-pencil-alt";
-    editIcon.setAttribute("name", id);
-    editBtn.appendChild(editIcon);
-
-    const deleteBtn = document.createElement("button");
-    deleteBtn.type = "button";
-    deleteBtn.className = "btn btn-outline-danger mr-2";
-    deleteBtn.setAttribute("name", id);
-    deleteBtn.onclick = function() { deleteTask.apply(this, arguments); };
-    const deleteIcon = document.createElement("i");
-    deleteIcon.className = "fas fa-trash-alt";
-    deleteIcon.setAttribute("name", id);
-    deleteBtn.appendChild(deleteIcon);
-
-    header.appendChild(editBtn);
-    header.appendChild(deleteBtn);
-
-    const body = document.createElement("div");
-    body.className = "card-body d-flex flex-column gap-2";
-
-    const img = document.createElement("img");
-    img.src = url || "images/defaultimage.jpg";
-    img.alt = "Task Image";
-    img.className = "card-image-top md-3 rounded-lg taskimage";
-    body.appendChild(img);
-
-    const h4 = document.createElement("h4");
-    h4.className = "task__card_title";
-    h4.textContent = title;
-    body.appendChild(h4);
-
-    const p = document.createElement("p");
-    p.className = "description trim-3-lines text-muted";
-    p.setAttribute("data-gram_editors", "false");
-    p.textContent = description;
-    body.appendChild(p);
-
-    const tagsDiv = document.createElement("div");
-    tagsDiv.className = "tags d-flex flex-wrap text-white";
-    const span = document.createElement("span");
-    span.className = "badge bg-primary m-1";
-    span.textContent = tags;
-    tagsDiv.appendChild(span);
-    body.appendChild(tagsDiv);
-
-    const footer = document.createElement("div");
-    footer.className = "card-footer";
-    const openBtn = document.createElement("button");
-    openBtn.type = "button";
-    openBtn.className = "btn btn-outline-primary float-right";
-    openBtn.setAttribute("data-bs-toggle", "modal");
-    openBtn.setAttribute("data-bs-target", "#showTaskModal");
-    openBtn.id = id;
-    openBtn.setAttribute("name", id);
-    openBtn.onclick = function() { openTask.apply(this, arguments); };
-    openBtn.textContent = "Open Task";
-    footer.appendChild(openBtn);
-
-    card.appendChild(header);
-    card.appendChild(body);
-    card.appendChild(footer);
-    col.appendChild(card);
-
-    return col;
+const htmlModalContent = ({ id, url, title, description }) => {
+    const date = new Date(parseInt(id));
+    return `    
+	<div id="${escapeHTML(id)}" class="d-flex flex-column gap-1" >
+    ${url ? `<img src="${escapeHTML(url)}" alt="Task Image" class="card-image-top md-3 rounded-lg showtaskimage" />` : `<img src="images/defaultimage.jpg" alt="Task Image" class="card-image-top md-3 rounded-lg taskimage" />`
+        }
+		<strong class="text-sm text-muted">Created on ${date.toDateString()}</strong>
+		<h2 class="my-3">${escapeHTML(title)}</h2>
+		<p class="lead">${escapeHTML(description)}</p>
+	</div>
+    `;
 };
 
 
@@ -100,13 +78,14 @@ const updateLocalStorage = () => {
 
 
 const updateIntialData = () => {
-    if (localStorage.tasks == undefined || localStorage.tasks.length <= 12) {
-        const noTasks = document.createElement("h5");
-        noTasks.className = "fw-bold text-center mt-5 text-muted";
-        noTasks.textContent = "No Tasks found";
-        taskcontent.appendChild(noTasks);
+    const getStoredData = localStorage.getItem("tasks");
+
+    if (!getStoredData || getStoredData.length <= 12) {
+        taskcontent.insertAdjacentHTML("beforeend", `<h5 class="fw-bold text-center mt-5 text-muted">No Tasks found</h5>`);
+        return;
     }
-    const localStoragecopy = JSON.parse(localStorage.tasks || "{}");
+
+    const localStoragecopy = JSON.parse(getStoredData);
 
     if (localStoragecopy.tasks) state.tasklist = localStoragecopy.tasks;
 
@@ -273,11 +252,15 @@ const searchTask = (e) => {
         taskcontent.removeChild(taskcontent.firstChild);
     };
 
+    const searchValue = e.target.value.toLowerCase();
     const resultData = state.tasklist.filter(({ title }) => {
-        return title.toLowerCase().includes(e.target.value.toLowerCase());
+        return title.toLowerCase().includes(searchValue);
     });
 
     resultData.map((cardDate) => {
         taskcontent.appendChild(htmlTaskContent(cardDate));
     });
 };
+if (typeof module !== "undefined") {
+    module.exports = { htmlTaskContent };
+}
