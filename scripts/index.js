@@ -208,8 +208,9 @@ const searchTask = (e) => {
         taskcontent.removeChild(taskcontent.firstChild);
     };
 
+    const searchValue = e.target.value.toLowerCase();
     const resultData = state.tasklist.filter(({ title }) => {
-        return title.toLowerCase().includes(e.target.value.toLowerCase());
+        return title.toLowerCase().includes(searchValue);
     });
 
     resultData.map((cardDate) => {
