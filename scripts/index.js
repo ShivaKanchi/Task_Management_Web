@@ -6,26 +6,37 @@ const state = {
 const taskcontent = document.querySelector(".tasks_content");
 const taskmodal = document.querySelector(".show_task_content");
 
+const escapeHTML = (str) => {
+    if (!str) return str;
+    return str.toString().replace(/[&<>"']/g, (m) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+    })[m]);
+};
+
 
 const htmlTaskContent = ({ id, key, url, title, tags, description }) =>
     `
-    <div class="col-md-6 col-lg-4 mt-3" id=${id} key=${id}>
+    <div class="col-md-6 col-lg-4 mt-3" id="${escapeHTML(id)}" key="${escapeHTML(id)}">
     <div class="card shadow-sm task__card">
         <div class="card-header d-flex gap-3 justify-content-end task__card_header">
-            <button type="button" class="btn btn-outline-info mr-2" name=${id} onclick="editTask.apply(this, arguments)">
-                <i class="fas fa-pencil-alt" name=${id}></i>
+            <button type="button" class="btn btn-outline-info mr-2" name="${escapeHTML(id)}" onclick="editTask.apply(this, arguments)">
+                <i class="fas fa-pencil-alt" name="${escapeHTML(id)}"></i>
             </button>
-            <button type="button" class="btn btn-outline-danger mr-2" name=${id} onclick="deleteTask.apply(this, arguments)">
-                <i class="fas fa-trash-alt" name=${id}></i>
+            <button type="button" class="btn btn-outline-danger mr-2" name="${escapeHTML(id)}" onclick="deleteTask.apply(this, arguments)">
+                <i class="fas fa-trash-alt" name="${escapeHTML(id)}"></i>
             </button>
         </div>
         <div class="card-body d-flex flex-column gap-2 ">
-            ${url ? `<img src=${url} alt="Task Image" class="card-image-top md-3 rounded-lg taskimage" />` : `<img src="images/defaultimage.jpg" alt="Task Image" class="card-image-top md-3 rounded-lg taskimage" />`
+            ${url ? `<img src="${escapeHTML(url)}" alt="Task Image" class="card-image-top md-3 rounded-lg taskimage" />` : `<img src="images/defaultimage.jpg" alt="Task Image" class="card-image-top md-3 rounded-lg taskimage" />`
     }
-            <h4 class="task__card_title">${title}</h4>
-            <p class="description trim-3-lines text-muted" data-gram_editors="false">${description}</p>
+            <h4 class="task__card_title">${escapeHTML(title)}</h4>
+            <p class="description trim-3-lines text-muted" data-gram_editors="false">${escapeHTML(description)}</p>
             <div class="tags d-flex flex-wrap text-white">
-                <span class="badge bg-primary m-1">${tags}</span>
+                <span class="badge bg-primary m-1">${escapeHTML(tags)}</span>
             </div>
             <div>
             </div>
@@ -36,8 +47,8 @@ const htmlTaskContent = ({ id, key, url, title, tags, description }) =>
             class="btn btn-outline-primary float-right" 
             data-bs-toggle="modal"
             data-bs-target="#showTaskModal" 
-            id=${id} 
-            name=${id}
+            id="${escapeHTML(id)}"
+            name="${escapeHTML(id)}"
             onclick="openTask.apply(this,arguments)">
             Open Task
             </button>
@@ -48,12 +59,12 @@ const htmlTaskContent = ({ id, key, url, title, tags, description }) =>
 const htmlModalContent = ({ id, url, title, description }) => {
     const date = new Date(parseInt(id));
     return `    
-	<div id=${id} class="d-flex flex-column gap-1" >
-    ${url ? `<img src=${url} alt="Task Image" class="card-image-top md-3 rounded-lg showtaskimage" />` : `<img src="images/defaultimage.jpg" alt="Task Image" class="card-image-top md-3 rounded-lg taskimage" />`
+	<div id="${escapeHTML(id)}" class="d-flex flex-column gap-1" >
+    ${url ? `<img src="${escapeHTML(url)}" alt="Task Image" class="card-image-top md-3 rounded-lg showtaskimage" />` : `<img src="images/defaultimage.jpg" alt="Task Image" class="card-image-top md-3 rounded-lg taskimage" />`
         }
 		<strong class="text-sm text-muted">Created on ${date.toDateString()}</strong>
-		<h2 class="my-3">${title}</h2>
-		<p class="lead">${description}</p>
+		<h2 class="my-3">${escapeHTML(title)}</h2>
+		<p class="lead">${escapeHTML(description)}</p>
 	</div>
     `;
 };
