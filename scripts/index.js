@@ -7,7 +7,7 @@ const taskcontent = document.querySelector(".tasks_content");
 const taskmodal = document.querySelector(".show_task_content");
 
 
-const htmlTaskContent = ({ id, key, url, title, tags, description }) =>
+const htmlTaskContent = ({ id, url, title, tags, description }) =>
     `
     <div class="col-md-6 col-lg-4 mt-3" id=${id} key=${id}>
     <div class="card shadow-sm task__card">
@@ -67,10 +67,14 @@ const updateLocalStorage = () => {
 
 
 const updateIntialData = () => {
-    if (localStorage.tasks == undefined || localStorage.tasks.length <= 12) {
+    const getStoredData = localStorage.getItem("tasks");
+
+    if (!getStoredData || getStoredData.length <= 12) {
         taskcontent.insertAdjacentHTML("beforeend", `<h5 class="fw-bold text-center mt-5 text-muted">No Tasks found</h5>`);
+        return;
     }
-    const localStoragecopy = JSON.parse(localStorage.tasks);
+
+    const localStoragecopy = JSON.parse(getStoredData);
 
     if (localStoragecopy) state.tasklist = localStoragecopy.tasks;
 
@@ -208,8 +212,9 @@ const searchTask = (e) => {
         taskcontent.removeChild(taskcontent.firstChild);
     };
 
+    const searchValue = e.target.value.toLowerCase();
     const resultData = state.tasklist.filter(({ title }) => {
-        return title.toLowerCase().includes(e.target.value.toLowerCase());
+        return title.toLowerCase().includes(searchValue);
     });
 
     resultData.map((cardDate) => {
