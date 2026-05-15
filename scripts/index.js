@@ -7,7 +7,7 @@ const taskcontent = document.querySelector(".tasks_content");
 const taskmodal = document.querySelector(".show_task_content");
 
 
-const htmlTaskContent = ({ id, key, url, title, tags, description }) =>
+const htmlTaskContent = ({ id, url, title, tags, description }) =>
     `
     <div class="col-md-6 col-lg-4 mt-3" id=${id} key=${id}>
     <div class="card shadow-sm task__card">
