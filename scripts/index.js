@@ -67,10 +67,14 @@ const updateLocalStorage = () => {
 
 
 const updateIntialData = () => {
-    if (localStorage.tasks == undefined || localStorage.tasks.length <= 12) {
+    const getStoredData = localStorage.getItem("tasks");
+
+    if (!getStoredData || getStoredData.length <= 12) {
         taskcontent.insertAdjacentHTML("beforeend", `<h5 class="fw-bold text-center mt-5 text-muted">No Tasks found</h5>`);
+        return;
     }
-    const localStoragecopy = JSON.parse(localStorage.tasks);
+
+    const localStoragecopy = JSON.parse(getStoredData);
 
     if (localStoragecopy) state.tasklist = localStoragecopy.tasks;
 
